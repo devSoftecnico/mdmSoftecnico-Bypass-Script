@@ -53,4 +53,7 @@ Este repositorio contiene un script para eludir la inscripción de MDM en dispos
 
 ## Créditos:
 
-Credits: eudy97 | MDM-bypass
+Credits: eudy97 | MDM-bypass Url: 
+   ```bash
+   https://github.com/eudy97/MDM-bypass
+   ```
