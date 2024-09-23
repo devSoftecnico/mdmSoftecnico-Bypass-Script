@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Global constants
+# Global constants (Default values)
 readonly DEFAULT_SYSTEM_VOLUME="Macintosh HD"
 readonly DEFAULT_DATA_VOLUME="Macintosh HD - Data"
 
@@ -31,6 +31,27 @@ fi
 # Check if the script is running in Recovery Mode
 checkRecoveryMode
 
+# Function to detect system and data volumes automatically
+detectVolumes() {
+  echo -e "${BLUE}Detecting volumes...${NC}"
+
+  # Try to detect the system volume (read-only volume)
+  SYSTEM_VOLUME=$(diskutil apfs list | grep "(System)" | awk -F'Name: ' '{print $2}' | xargs)
+
+  # Try to detect the data volume (writable volume)
+  DATA_VOLUME=$(diskutil apfs list | grep "(Data)" | awk -F'Name: ' '{print $2}' | xargs)
+
+  # Use default volumes if detection fails
+  SYSTEM_VOLUME=${SYSTEM_VOLUME:-$DEFAULT_SYSTEM_VOLUME}
+  DATA_VOLUME=${DATA_VOLUME:-$DEFAULT_DATA_VOLUME}
+
+  echo -e "${GREEN}Using system volume: $SYSTEM_VOLUME${NC}"
+  echo -e "${GREEN}Using data volume: $DATA_VOLUME${NC}"
+}
+
+# Call the function to detect volumes
+detectVolumes
+
 # Function to check for MDM enrollment
 checkMDMEnrollment() {
   echo -e "${BLUE}Checking MDM enrollment status...${NC}"
@@ -48,11 +69,11 @@ removeMDM() {
   echo -e "${BLUE}Removing MDM profiles and blocking MDM hosts...${NC}"
   
   # Mount System Volume
-  systemVolumePath=$(defineVolumePath "$DEFAULT_SYSTEM_VOLUME" "System")
+  systemVolumePath=$(defineVolumePath "$SYSTEM_VOLUME" "System")
   mountVolume "$systemVolumePath"
 
   # Mount Data Volume
-  dataVolumePath=$(defineVolumePath "$DEFAULT_DATA_VOLUME" "Data")
+  dataVolumePath=$(defineVolumePath "$DATA_VOLUME" "Data")
   mountVolume "$dataVolumePath"
 
   # Block MDM hosts
@@ -74,12 +95,46 @@ removeMDM() {
   echo -e "${GREEN}Config profiles removed successfully.${NC}\n"
 }
 
+# Function to block MDM domains temporarily in the hosts file
+blockMDMDomains() {
+  echo -e "${BLUE}Blocking MDM domains in the hosts file...${NC}"
+  
+  # List of domains to block
+  mdm_domains=(
+    "deviceenrollment.apple.com"
+    "mdmenrollment.apple.com"
+    "iprofiles.apple.com"
+  )
+  
+  # Backup the current hosts file
+  cp /etc/hosts /etc/hosts.backup
+  
+  # Add the domains to the hosts file
+  for domain in "${mdm_domains[@]}"; do
+    if ! grep -q "$domain" /etc/hosts; then
+      echo "127.0.0.1 $domain" >> /etc/hosts
+    fi
+  done
+  echo -e "${GREEN}MDM domains blocked successfully.${NC}"
+}
+
+# Function to restore the original hosts file
+restoreHostsFile() {
+  if [ -f /etc/hosts.backup ]; then
+    echo -e "${BLUE}Restoring the original hosts file...${NC}"
+    mv /etc/hosts.backup /etc/hosts
+    echo -e "${GREEN}Hosts file restored successfully.${NC}"
+  else
+    echo -e "${RED}Backup hosts file not found.${NC}"
+  fi
+}
+
 # Function to create a new local user
 createLocalUser() {
   echo -e "${BLUE}Creating a new local user...${NC}"
   
   # Mount Data Volume
-  dataVolumePath=$(defineVolumePath "$DEFAULT_DATA_VOLUME" "Data")
+  dataVolumePath=$(defineVolumePath "$DATA_VOLUME" "Data")
   mountVolume "$dataVolumePath"
 
   # Check if user already exists
@@ -139,7 +194,7 @@ defineVolumePath() {
 
 # Main menu
 PS3='Please select an option: '
-options=("1. Check MDM Profile" "2. Remove MDM" "3. Create Local User" "4. Exit")
+options=("1. Check MDM Profile" "2. Remove MDM" "3. Create Local User" "4. Block MDM Temporarily" "5. Restore Hosts File" "6. Exit")
 
 while true; do
   echo -e "\n${CYAN}--------------------------------------"
@@ -159,7 +214,15 @@ while true; do
         createLocalUser
         break
         ;;
-      "4. Exit")
+      "4. Block MDM Temporarily")
+        blockMDMDomains
+        break
+        ;;
+      "5. Restore Hosts File")
+        restoreHostsFile
+        break
+        ;;
+      "6. Exit")
         echo -e "${BLUE}Exiting...${NC}"
         exit 0
         ;;
