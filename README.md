@@ -1,4 +1,4 @@
-# MDM-Softecnico Bypass Script
+# mdmSoftecnico Bypass Script
 
 Este repositorio contiene un script para eludir la inscripción de MDM en dispositivos macOS. El script está diseñado para ejecutarse en **Modo de Recuperación** y también puede ser copiado a un SSD externo para facilitar su uso.
 
@@ -28,13 +28,13 @@ Este repositorio contiene un script para eludir la inscripción de MDM en dispos
 1. **Montar el SSD** (si es necesario):
    - Si el SSD no está montado automáticamente, puedes hacerlo manualmente con:
      ```bash
-     diskutil mount /Volumes/mdmSoftecnico
+     diskutil mount /Volumes/nombredelssdomemoria
      ```
 
 2. **Ejecutar el script**:
    - Si el script está en el SSD externo, ejecuta:
      ```bash
-     sudo /Volumes/mdmSoftecnico/mdmSoftecnico.sh
+     sudo /Volumes/nombredelssdomemoria/mdmSoftecnico.sh
      ```
    - Si has clonado el repositorio en el sistema:
      ```bash
