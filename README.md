@@ -35,11 +35,17 @@ Este repositorio contiene un script para eludir la inscripción de MDM en dispos
    - Si el script está en el SSD externo, ejecuta:
      ```bash
      sudo /Volumes/nombredelssdomemoria/mdmSoftecnico.sh
+      ```
+   - Puedes que reciba error al ejecutarlo con el sudo, solo tiene que eliminar sudo y ejecutarlo
+     ```bash
+     /Volumes/nombredelssdomemoria/mdmSoftecnico.sh
      ```
    - Si has clonado el repositorio en el sistema:
      ```bash
      sudo ./mdmSoftecnico.sh
      ```
+   
+     
 
 3. **Introducir la contraseña de administrador** cuando se te solicite.
 
