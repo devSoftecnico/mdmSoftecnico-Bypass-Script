@@ -8,36 +8,43 @@ Este repositorio contiene un script para eludir la inscripción de MDM en dispos
 - **Eliminación de MDM**: Bloquea los servidores de MDM y elimina los perfiles de inscripción de la máquina.
 - **Creación de usuarios locales**: Permite crear un nuevo perfil de usuario con permisos administrativos.
 
-## Instrucciones breves:
+## Instrucciones paso a paso:
+
+### Paso 1: Preparación
 
 1. **Conectar el SSD externo** (si tienes uno) o **clonar este repositorio** a la máquina en Modo de Recuperación.
 
-2. **Reiniciar en Modo de Recuperación**:
-   - **Intel**: Reinicia tu Mac y mantén presionadas las teclas **Command (⌘) + R**.
-   - **M1/M2**: Mantén presionado el botón de encendido hasta que veas las opciones de arranque, luego selecciona **Opciones**.
+### Paso 2: Iniciar en Modo de Recuperación
 
-3. **Abrir la Terminal** desde el menú superior.
+1. **Reiniciar en Modo de Recuperación**:
+   - **Para Macs con procesadores Intel**: Reinicia tu Mac y mantén presionadas las teclas **Command (⌘) + R**.
+   - **Para Macs con procesadores M1/M2**: Mantén presionado el botón de encendido hasta que veas las opciones de arranque, luego selecciona **Opciones > Continuar**.
 
-4. **Montar el SSD** si es necesario:
+2. **Abrir la Terminal** desde el menú superior de Modo de Recuperación:
+   - Ve a **Utilidades > Terminal**.
 
-   ```bash
-   diskutil mount /Volumes/mdmSoftecnico
-Ejecutar el script:
+### Paso 3: Montar y ejecutar el script
 
+1. **Montar el SSD** (si es necesario):
+   - Si el SSD no está montado automáticamente, puedes hacerlo manualmente con:
+     ```bash
+     diskutil mount /Volumes/mdmSoftecnico
+     ```
 
-Si el script está en el SSD:
-    Copiar código
-   ```bash
-   sudo /Volumes/mdmSoftecnico/mdmSoftecnico.sh
+2. **Ejecutar el script**:
+   - Si el script está en el SSD externo, ejecuta:
+     ```bash
+     sudo /Volumes/mdmSoftecnico/mdmSoftecnico.sh
+     ```
+   - Si has clonado el repositorio en el sistema:
+     ```bash
+     sudo ./mdmSoftecnico.sh
+     ```
 
+3. **Introducir la contraseña de administrador** cuando se te solicite.
 
-Si estás usando el repositorio directamente:
-   Copiar código
-```bash
+---
 
-sudo ./mdmSoftecnico.sh
+## Créditos:
 
-Introducir la contraseña de administrador cuando se te solicite.
-
-Créditos:
 Credits: eudy97 | MDM-bypass
